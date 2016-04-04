@@ -5,7 +5,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 
-final class Result<T,E> {
+public final class Result<T,E> {
 
   // I gotta determine whether these fields should be implemeted like a union or not..
   private final Optional<T> value;

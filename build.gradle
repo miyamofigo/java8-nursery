@@ -1,5 +1,8 @@
 apply plugin: 'java'
 
+group = theGroup
+version = theVersion
+
 repositories {
 	mavenCentral()
 }

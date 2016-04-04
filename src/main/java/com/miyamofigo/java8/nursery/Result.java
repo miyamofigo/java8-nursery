@@ -58,7 +58,7 @@ public final class Result<T,E> {
     try { return op.apply((ok().get())); } catch (NoSuchElementException e) { return this; }
   } 
 
-  public Result<T,?> or(Result<T,?> res) { if (isErr()) return res; else return this; }
+  public Result<?,?> or(Result<?,?> res) { if (isErr()) return res; else return this; }
 
   public Result<T,?> orElse(Function<E, Result<T,?>> op) {
     Objects.requireNonNull(op);

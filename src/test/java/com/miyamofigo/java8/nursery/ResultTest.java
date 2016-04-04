@@ -14,7 +14,7 @@ public class ResultTest {
     assertEquals(2, ok.map(i -> i+1).ok().get()); 
     assertEquals("one", ok.map(i -> "one").ok().get()); 
     assert(ok.mapErr(str -> "error").ok().get() == 1);
-    assert(ok.and(Result.ok(2)).ok().get() == 2);
+    assert((Integer) ok.and(Result.ok(2)).ok().get() == 2);
     assertEquals((Integer) 2, ok.andThen(i -> Result.ok(i+1)).ok().get()); 
     assertEquals(ok, ok.or(Result.ok(2)));
     assertEquals(ok, ok.orElse(e -> { 

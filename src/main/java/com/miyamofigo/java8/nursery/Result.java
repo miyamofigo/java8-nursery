@@ -51,14 +51,14 @@ public final class Result<T,E> {
     try { return Result.err(mapper.apply(err().get())); } catch (NoSuchElementException e) { return this; } 
   }
 
-  public Result<?,?> and(Result<?,?> res) { if (isOk()) return res; else return this; }
+  public Result<T,E> and(Result<T,E> res) { if (isOk()) return res; else return this; }
 
   public Result<?,E> andThen(Function<T, Result<?,E>> op) {
     Objects.requireNonNull(op);
     try { return op.apply((ok().get())); } catch (NoSuchElementException e) { return this; }
   } 
 
-  public Result<?,?> or(Result<?,?> res) { if (isErr()) return res; else return this; }
+  public Result<T,E> or(Result<T,E> res) { if (isErr()) return res; else return this; }
 
   public Result<T,?> orElse(Function<E, Result<T,?>> op) {
     Objects.requireNonNull(op);

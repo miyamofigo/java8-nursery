@@ -5,92 +5,120 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 
+<<<<<<< HEAD
 public final class Result<T,E> {
+=======
+public interface Result<T,E> {
+>>>>>>> dev
 
-  // I gotta determine whether these fields should be implemeted like a union or not..
-  private final Optional<T> value;
-  private final Optional<E> reason;
+  static <T,E> Result<T,E> ok(T val) { return new Ok<>(val); }
+  static <T,E> Result<T,E> err(E val) { return new Err<>(val); }
 
-  private final boolean _isOk;
+  boolean isOk();
+  boolean isErr();
 
-  private Result(T value, E reason, boolean isOk) { 
-    this.value = isOk ? Optional.of(value) : Optional.empty();
-    this.reason = isOk ? Optional.empty() : Optional.of(reason);
-    this._isOk = isOk;  
-  } 
+  Optional<T> ok(); 
+  Optional<E> err();
 
-  public static <T,E> Result<T,E> ok(T value) { 
-    Objects.requireNonNull(value);
-    return new Result<T,E>(value, null, true); 
-  } 
-
-  public static <T,E> Result<T,E> err(E reason) { 
-    Objects.requireNonNull(reason);
-    return new Result<T,E>(null, reason, false); 
-  } 
-
-  public boolean isOk() { return _isOk; }
-
-  public boolean isErr() { return !_isOk; }
-
-  public Optional<T> ok() { 
-    if (isOk()) return value; else return Optional.empty(); 
-  }
-
-  public Optional<E> err() {  
-    if (isErr()) return reason; else return Optional.empty();
-  }
-
-  public Result<?,E> map(Function<T,?> mapper) {
+  @SuppressWarnings("unchecked")
+  default <U> Result<U,E> map(Function<? super T,? extends U> mapper) {
     Objects.requireNonNull(mapper);
-    try { return Result.ok(mapper.apply(ok().get())); } catch (NoSuchElementException e) { return this; } 
+    if (isOk()) return Result.ok(mapper.apply(ok().get())); else return (Result<U,E>) this;
   }
 
-  public Result<T,?> mapErr(Function<E,?> mapper) {
+  @SuppressWarnings("unchecked")
+  default <F> Result<T,F> mapErr(Function<? super E,? extends F> mapper) { 
     Objects.requireNonNull(mapper);
-    try { return Result.err(mapper.apply(err().get())); } catch (NoSuchElementException e) { return this; } 
+    if (isErr()) return Result.err(mapper.apply(err().get())); else return (Result<T,F>) this;
   }
 
-  public Result<T,E> and(Result<T,E> res) { if (isOk()) return res; else return this; }
+  default Iter<T> iter() { return new Iter<>(ok().get()); } 
 
-  public Result<?,E> andThen(Function<T, Result<?,E>> op) {
-    Objects.requireNonNull(op);
-    try { return op.apply((ok().get())); } catch (NoSuchElementException e) { return this; }
-  } 
+  class Iter<T> implements MIterator<T> {
 
+    private Optional<T> inner; 
+    
+    Iter(T val) { inner = Optional.of(val); }
+
+    public Optional<T> next() { Optional<T> res = inner; remove(); return res; }
+  
+    public void remove() { inner = Optional.empty(); }
+  }
+
+  default Result<T,E> and(Result<T,E> res) { return isOk() ? res : this; } 
+
+  @SuppressWarnings("unchecked")
+  default <U> Result<U,E> andThen(Function<? super T,? extends U> op) {
+    return isOk() ? Result.ok(op.apply(ok().get())) : (Result<U,E>) this;
+  }
+
+  default Result<T,E> or(Result<T,E> res) { return isErr() ? res : this; }
+
+  @SuppressWarnings("unchecked")
+  default Result<T,E> orElse(Function<? super E,? extends T> op) {
+    return isErr() ? Result.ok(op.apply(err().get())) : (Result<T,E>) this;
+  }   
+
+<<<<<<< HEAD
   public Result<T,E> or(Result<T,E> res) { if (isErr()) return res; else return this; }
+=======
+  default T unwrapOr(T optb) { return isOk() ? ok().get() : optb; }
+>>>>>>> dev
 
-  public Result<T,?> orElse(Function<E, Result<T,?>> op) {
-    Objects.requireNonNull(op);
-    try { return op.apply((err().get())); } catch (NoSuchElementException e) { return this; }
-  }
+  default T unwrapOrElse(Function<? super E,T> op) { return isOk() ? ok().get() : op.apply(err().get()); }
 
-  public T unwrapOr(T optb) {
-    try { return ok().get(); } catch (NoSuchElementException e) { return optb; }
-  }
+  default T unwrap() throws NoSuchElementException { return ok().get(); }
 
-  public T unwrapOrElse(Function<E,T> op) {
-    Objects.requireNonNull(op);
-    try { return ok().get(); } catch (NoSuchElementException e) { return op.apply((err().get())); }
-  }
+  default E unwrapErr() throws NoSuchElementException { return err().get(); } 
 
-  public T unwrap() throws Exception {
-    try { return ok().get(); } 
-    catch (NoSuchElementException e) { 
-      throw new Exception("failed to unwrap on an `error` value: " + reason.get().toString()); 
+  default T expect(String msg) { 
+    try { return ok().get(); } catch (NoSuchElementException e) {
+      throw new NoSuchElementException(msg + err().get().toString());
     }
   }
 
-  public T expect(String msg) throws Exception {
-    try { return ok().get(); } 
-    catch (NoSuchElementException e) { throw new Exception(msg + reason.get().toString()); }
+  final class Ok<T,E> implements Result<T,E> {
+
+    private final T value; 
+    
+    private Ok(T value) {
+      Objects.requireNonNull(value);
+      this.value = value;
+    }
+
+    @Override 
+    public boolean isOk() { return true; } 
+
+    @Override 
+    public boolean isErr() { return false; } 
+
+    @Override 
+    public Optional<T> ok() { return Optional.of(value); }  
+
+    @Override 
+    public Optional<E> err() { throw new NoSuchElementException("err() on Ok"); }
   }
 
-  public E unwrapErr() throws Exception {
-    try { return err().get(); } 
-    catch (NoSuchElementException e) { 
-      throw new Exception("failed to unwrap on an `ok` reason: " + value.get().toString());
-    }
-  } 
+  final class Err<T,E> implements Result<T,E> {
 
-}
+    private final E value; 
+    
+    private Err(E value) {
+      Objects.requireNonNull(value);
+      this.value = value;
+    }
+
+    @Override 
+    public boolean isOk() { return false; } 
+
+    @Override 
+    public boolean isErr() { return true; } 
+
+    @Override 
+    public Optional<T> ok() { throw new NoSuchElementException("ok() on Err"); }
+
+    @Override 
+    public Optional<E> err() { return Optional.of(value); }   
+  }
+} 
+

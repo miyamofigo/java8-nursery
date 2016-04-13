@@ -5,11 +5,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 
-<<<<<<< HEAD
-public final class Result<T,E> {
-=======
 public interface Result<T,E> {
->>>>>>> dev
 
   static <T,E> Result<T,E> ok(T val) { return new Ok<>(val); }
   static <T,E> Result<T,E> err(E val) { return new Err<>(val); }
@@ -59,11 +55,7 @@ public interface Result<T,E> {
     return isErr() ? Result.ok(op.apply(err().get())) : (Result<T,E>) this;
   }   
 
-<<<<<<< HEAD
-  public Result<T,E> or(Result<T,E> res) { if (isErr()) return res; else return this; }
-=======
   default T unwrapOr(T optb) { return isOk() ? ok().get() : optb; }
->>>>>>> dev
 
   default T unwrapOrElse(Function<? super E,T> op) { return isOk() ? ok().get() : op.apply(err().get()); }
 

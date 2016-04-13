@@ -15,13 +15,8 @@ public class ResultTest {
     assertEquals((long) 2, (long) ok.map(i -> i+1).ok().get()); 
     assertEquals("one", ok.map(i -> "one").ok().get()); 
     assert(ok.mapErr(str -> "error").ok().get() == 1);
-<<<<<<< HEAD
-    assert((Integer) ok.and(Result.ok(2)).ok().get() == 2);
-    assertEquals((Integer) 2, ok.andThen(i -> Result.ok(i+1)).ok().get()); 
-=======
     assert(ok.and(Result.ok(2)).ok().get() == 2);
     assertEquals((Integer) 2, ok.andThen(i -> i+1).ok().get()); 
->>>>>>> dev
     assertEquals(ok, ok.or(Result.ok(2)));
 		assertEquals(ok, ok.orElse(str -> 3));
     assert(ok.unwrapOr(2) == 1);

@@ -9,7 +9,7 @@
   <scm>
     <connection>scm:git:git://github.com/miyamofigo/java8-nursery.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/miyamofigo/java8-nursery.git</developerConnection>
-    <tag>58c2e3f58dab5c3be0b3ed8d8d0881af8580c1c8
+    <tag>d02da2070b332a4fd8019738ae447a555bd4c3e4
 </tag>
     <url>https://github.com/miyamofigo/java8-nursery</url>
   </scm>

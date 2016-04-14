@@ -47,7 +47,7 @@ public class ResultTest {
     assertEquals((int) 4, (int) err.unwrapOrElse(str -> str.length()));
     try { err.unwrap(); fail(); } catch (NoSuchElementException e) {} 
     try { err.expect("SUCCESS: "); fail(); } 
-    catch (NoSuchElementException e) { assertEquals("SUCCESS: test", e.getMessage()); }
+    catch (RuntimeException e) { assertEquals("SUCCESS: test", e.getMessage()); }
     try { assertEquals("test", err.unwrapErr()); } catch (NoSuchElementException e) { fail(); } 
   }
 

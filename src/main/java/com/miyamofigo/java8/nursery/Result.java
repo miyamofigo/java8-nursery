@@ -73,7 +73,7 @@ public interface Result<T,E> {
 
   default T expect(String msg) { 
     try { return ok().get(); } catch (NoSuchElementException e) {
-      throw new NoSuchElementException(msg + err().get().toString());
+      throw new RuntimeException(msg + err().get().toString());
     }
   }
 

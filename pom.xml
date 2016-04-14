@@ -3,13 +3,13 @@
   <groupId>com.miyamofigo</groupId>
   <artifactId>java8.nursery</artifactId>
   <packaging>jar</packaging>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.2.0-SNAPSHOT</version>
   <name>java8.nursery</name>
   <description>read README.md</description>
   <scm>
     <connection>scm:git:git://github.com/miyamofigo/java8-nursery.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/miyamofigo/java8-nursery.git</developerConnection>
-    <tag>5d10bd16b23fd4d5c8c7073cad9185f3769510e7
+    <tag>58c2e3f58dab5c3be0b3ed8d8d0881af8580c1c8
 </tag>
     <url>https://github.com/miyamofigo/java8-nursery</url>
   </scm>

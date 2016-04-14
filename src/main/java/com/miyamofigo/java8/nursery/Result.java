@@ -28,7 +28,15 @@ public interface Result<T,E> {
     if (isErr()) return Result.err(mapper.apply(err().get())); else return (Result<T,F>) this;
   }
 
-  default Iter<T> iter() { return new Iter<>(ok().get()); } 
+  default Iter<T> iter() { 
+    if (!isOk()) throw new UnsupportedOperationException("failed to iter() on Err result");
+    else return new Iter<>(ok().get()); 
+  } 
+
+  default Iter<E> iterErr() {
+    if (!isErr()) throw new UnsupportedOperationException("failed to iterErr() on Ok result");
+    else return new Iter<>(err().get());
+  } 
 
   class Iter<T> implements MIterator<T> {
 
@@ -39,7 +47,7 @@ public interface Result<T,E> {
     public Optional<T> next() { Optional<T> res = inner; remove(); return res; }
   
     public void remove() { inner = Optional.empty(); }
-  }
+  } 
 
   default Result<T,E> and(Result<T,E> res) { return isOk() ? res : this; } 
 
